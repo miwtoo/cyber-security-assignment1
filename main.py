@@ -219,7 +219,7 @@ elif mode == "2" :
         print("File Not Found")
 
 elif mode == "3" :
-    original_file = input("Enter signature file :")
+    original_file = input("Enter original file :")
     f = open(filename, "rt")
     f2 = open(original_file, "rt")
     verify_signature(b64decode(f.read()), f2.read())

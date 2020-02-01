@@ -108,11 +108,7 @@ def decryptionAES(text, modeType = 0):
 def digital_signature(text) :
     # Generate 1024-bit RSA key pair (private + public key)
     try :
-        f = open('rsa_pub.pem','x')
-        f = open('rsa_pub.pem','r')
-        keyPair = RSA.import_key(f.read())
-        f.close()
-    except FileExistsError:
+        f = open('rsa_pri.pem','x')
         keyPair = RSA.generate(bits=2048)
         f = open('rsa_pri.pem','wb')
         f.write(keyPair.export_key('PEM'))
@@ -121,6 +117,13 @@ def digital_signature(text) :
         f = open('rsa_pub.pem','wb')
         f.write(keyPair.publickey().export_key('PEM'))
         f.close()
+
+    except FileExistsError:
+        f = open('rsa_pri.pem','r')
+        keyPair = RSA.import_key(f.read())
+        f.close()
+
+        
     
 
 
@@ -171,14 +174,15 @@ if mode == "1" :
     print("Encryption Mode")
     try : 
         f = open(filename, "rt")
-        data = encryptionAES(f.read())
+        # data = encryptionAES(f.read())
+        data = f.read()
         print(data)
         
-        f3 = open("lock_" + filename, "wt")
-        f3.write(data)
-        f3.close()
+        # f3 = open("lock_" + filename, "wt")
+        # f3.write(data)
+        # f3.close()
 
-        f4 = open("lock_sign_" + filename, "wt")
+        f4 = open("sign_" + filename, "wt")
         f4.write(digital_signature(data))
         f4.close()
 
@@ -199,20 +203,23 @@ if mode == "1" :
 elif mode == "2" :
     print("Decryption Mode")
     try :
-        f = open(filename, "rt")
-        data = decryptionAES(f.read())
-        print(data)
-        f2 = open("unlock_" + filename, "wt")
-        f2.write(data)
-        f2.close()
-        f.close()
+        # f = open(filename, "rt")
+        # data = decryptionAES(f.read())
+        # print(data)
+        # f2 = open("unlock_" + filename, "wt")
+        # f2.write(data)
+        # f2.close()
+        # f.close()
 
-    except UnicodeDecodeError :
+    # except UnicodeDecodeError :
         f = open(filename, "rb")
         data = decryptionAES(f.read(), 1)
         #print(data)
         f2 = open("unlock_" + filename, "wb")
-        f2.write(data)
+        try :
+            f2.write(data)
+        except TypeError :
+            print("Can't Decryption Text File")
         f2.close()
         f.close()
     except FileNotFoundError : 

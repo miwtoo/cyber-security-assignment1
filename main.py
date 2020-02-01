@@ -106,7 +106,6 @@ def decryptionAES(text, modeType = 0):
         print("Incorrect KeyError")
 
 def digital_signature(text) :
-    # Generate 1024-bit RSA key pair (private + public key)
     try :
         f = open('rsa_pri.pem','x')
         keyPair = RSA.generate(bits=2048)
@@ -127,9 +126,9 @@ def digital_signature(text) :
     
 
 
-    # Sign the message using the PKCS#1 v1.5 signature scheme (RSASP1)
     msg = text.encode()
     hash = SHA256.new(msg)
+
     signer = PKCS115_SigScheme(keyPair)
     signature = signer.sign(hash)
     #print(signature)
@@ -181,6 +180,11 @@ if mode == "1" :
         # f3 = open("lock_" + filename, "wt")
         # f3.write(data)
         # f3.close()
+
+        f2 = open("encrypt_" + filename, "w")
+        f2.write(SHA256.new(data.encode()).hexdigest())
+        f2.close()
+
 
         f4 = open("sign_" + filename, "wt")
         f4.write(digital_signature(data))
